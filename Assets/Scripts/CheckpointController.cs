@@ -5,6 +5,7 @@ public class CheckpointController : MonoBehaviour
 {
     public GameObject player;
     public GameObject checkPoint;
+    public GameObject Notification;
     public Vector3 playerPosition;
     public List<Transform> checkpoints = new List<Transform>();
     public int currentChck = 0;
@@ -21,11 +22,16 @@ public class CheckpointController : MonoBehaviour
     {
         if (alive == false)
         {
-            player.transform.position = checkPoint.transform.position;
+            player.transform.position = checkpoints[currentChck].position;
             lives -= 1;
             alive = true;
         }
 
+    }
+
+    public void TurnOff()
+    {
+        Notification.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -33,7 +39,10 @@ public class CheckpointController : MonoBehaviour
         if (other.CompareTag("checkpoint"))
         {
             Debug.Log("You hit a checkpoint!");
-            currentChck += 1;// hacer un monto de vidas concreto, y solo tomar en cuenta el ultimo checkpoint que tocaste
+            currentChck += 1;
+            Notification.SetActive(true);
+            Invoke("TurnOff", 1f);
+            // hacer un monto de vidas concreto, y solo tomar en cuenta el ultimo checkpoint que tocaste
         }
     }
 }

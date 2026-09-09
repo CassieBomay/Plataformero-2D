@@ -4,6 +4,8 @@ public class CheckpointBehaviour : MonoBehaviour
 {
     private Collider ThisCollider;
     private Component isEnabled;
+    public int currentCheckpoint;
+    public Component CheckpointController;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {

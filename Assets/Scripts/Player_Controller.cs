@@ -34,6 +34,13 @@ public class Player_Controller : MonoBehaviour
     private Stack<Player_States> _rewind = new Stack<Player_States>();
     private Queue<Player_States> _states = new Queue<Player_States>();
 
+    private float hitTimer = 0f;
+
+    //public GameObject player;
+    //public int Coins = 0;
+    //public GameObject Notification;
+    //public float Timer = 0f;
+
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -47,6 +54,7 @@ public class Player_Controller : MonoBehaviour
         Movement();
         Jump();
 
+        Hit();
         Death();
     }
 
@@ -56,10 +64,25 @@ public class Player_Controller : MonoBehaviour
     {
         //Movimiento
         float axisH = inputMove.action.ReadValue<Vector2>().x;
+
+        bool isGrounded = Physics2D.Raycast(transform.position, Vector3.down, 0.55f, layerGround);
+
+        //Detectar "pared"
+        if (!isGrounded && Mathf.Abs(axisH) > 0.1f)
+        {
+            Vector2 moveDirection = new Vector2(Mathf.Sign(axisH), 0f);
+            bool isTouchingWall = Physics2D.Raycast(transform.position, moveDirection, 0.55f, layerGround);
+
+            if (isTouchingWall)
+            {
+                axisH = 0f;
+            }
+        }
+
         _rb.linearVelocityX = axisH * p_Speed;
 
-        //Rotación
-        if (isDead == false)
+        //Rotación del sprite
+        if (!isDead)
         {
             if (axisH > 0.1f)
                 _spriteRenderer.flipX = false;
@@ -89,6 +112,18 @@ public class Player_Controller : MonoBehaviour
         }
     }
 
+    void Hit()
+    {
+
+        if (hitTimer > 0f)
+        {
+            hitTimer -= Time.deltaTime;
+            _spriteRenderer.color = Color.red;
+        }
+        else
+            _spriteRenderer.color = Color.white;
+    }
+
     void Death()
     {
         if (current_HP == 0)
@@ -101,10 +136,21 @@ public class Player_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Tramp"))
+        if (collision.CompareTag("Tramp") && hitTimer <= 0f)
         {
             HP[current_HP - 1].SetActive(false);
             current_HP--;
+
+            float hitDuration = 0.2f;
+            hitTimer = hitDuration;
+        }
+    }
+    
+    void UpdateHP()
+    {
+        for (int i = 0; i < HP.Length; i++)
+        {
+            HP[i].SetActive(i < current_HP);
         }
     }
 
@@ -138,13 +184,12 @@ public class Player_Controller : MonoBehaviour
     {
         if (_states.Count >= recordDuration)
         {
-            //Debug.Log("Hola" + _rewind.Peek());
             _states.Dequeue(); //Para borrar entradas viejas.
         }
 
-        _states.Enqueue(new Player_States(transform.position, _rb.linearVelocity)); //Para guardar nuevas entradas.
-        //Debug.Log("Recording state: " + transform.position + ", Velocity: " + _rb.linearVelocity);
-        Debug.Log("States count: " + _states.Count);
+        AnimatorStateInfo currentFrame = _animator.GetCurrentAnimatorStateInfo(0);
+
+        _states.Enqueue(new Player_States(transform.position, _rb.linearVelocity, currentFrame.fullPathHash, currentFrame.normalizedTime, current_HP)); //Para guardar nuevas entradas.
     }
 
     void ReverseTime()
@@ -153,12 +198,29 @@ public class Player_Controller : MonoBehaviour
         {
             Player_States state = _rewind.Pop();
 
+            //rewind_movement
             transform.position = state.position;
             _rb.linearVelocity = state.velocity;
+
+            //revind_animation
+            _animator.Play(state.animationFrame, 0, state.animationTime);
+
+            //rewind_HP
+            current_HP = state.currentHP;
+            UpdateHP();
         }
         else
             isRewinding = false;
     }
+
+    //private void OnTriggerEnter(Collider other)
+    //{
+        //if (other.CompareTag("Coin"))
+        //{
+            //Debug.Log("You got a coin!");
+            //Coins += 1;
+        //}
+    //}
 }
 
 
@@ -167,10 +229,16 @@ public class Player_States
 {
     public Vector3 position;
     public Vector3 velocity;
+    public int animationFrame;
+    public float animationTime;
+    public int currentHP;
 
-    public Player_States(Vector3 pos, Vector3 vel)
+    public Player_States(Vector3 pos, Vector3 vel, int frame, float time, int hp)
     {
         position = pos;
         velocity = vel;
+        animationFrame = frame;
+        animationTime = time;
+        currentHP = hp;
     }
 }
