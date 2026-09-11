@@ -1,29 +1,34 @@
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class CoinBehaviour : MonoBehaviour
 {
-    private Collider ThisCollider;
-    private Component isEnabled;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("Movement")]
+    [SerializeField] private float rot_Speed = 150f;
+    [SerializeField] private float move_Speed = 1f;
+
+    [SerializeField] private float height = 0.3f;
+
+    private Vector3 startPosition;
+
+    private void Start()
     {
-        ThisCollider = GetComponent<Collider>();
-        isEnabled = GetComponent<CapsuleCollider>();
+        startPosition = transform.localPosition;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        float heightOffset = Mathf.Abs(Mathf.Sin(Time.time * move_Speed) * height);
+        transform.localPosition = new Vector3(startPosition.x, startPosition.y + heightOffset, startPosition.z);
+
+        transform.Rotate(0, -rot_Speed * Time.fixedDeltaTime, 0, Space.World);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
-            // Toggles the state (true becomes false, false becomes true)
-            ThisCollider.isTrigger = !ThisCollider.isTrigger;
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
     }
 }

@@ -6,14 +6,13 @@ public class CheckpointBehaviour : MonoBehaviour
     private Component isEnabled;
     public int currentCheckpoint;
     public Component CheckpointController;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+
     void Start()
     {
         ThisCollider = GetComponent<Collider>();
         isEnabled = GetComponent<SphereCollider>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         
