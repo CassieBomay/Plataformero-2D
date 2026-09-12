@@ -17,7 +17,7 @@ public class Event_Manager : MonoBehaviour
     private Queue<IEnumerator> eventQueue = new Queue<IEnumerator>();
     private bool processingQueue = false;
 
-    [SerializeField] float activationInterval = 2f;
+    //[SerializeField] float activationInterval = 2f;
     [SerializeField] Trap[] traps;
 
     private Dictionary<string, Action<GameObject>> tagActions;
@@ -48,12 +48,7 @@ public class Event_Manager : MonoBehaviour
 
     public void HandleTramp(GameObject trap)
     {
-        eventQueue.Enqueue(ActivateTrap(trap));
-
-        if (!processingQueue)
-        {
-            StartCoroutine(ProcessQueue());
-        }
+        EnqueueEvent(ActivateTrap(trap));
 
     }
 

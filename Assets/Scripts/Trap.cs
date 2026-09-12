@@ -4,7 +4,7 @@ using UnityEngine;
 public class Trap : MonoBehaviour
 {
 
-    [SerializeField] float activationInterval = 2f;
+    //[SerializeField] float activationInterval = 2f;
     [SerializeField] float moveDistance = 1f;
     [SerializeField] float moveSpeed = 5f;
 
@@ -35,20 +35,20 @@ public class Trap : MonoBehaviour
         //StartCoroutine(TrapCycle());
     }
 
-    private IEnumerator TrapCycle()
-    {
-        while (true)
-        {
+    //private IEnumerator TrapCycle()
+    //{
+    //    while (true)
+    //    {
             
-            yield return new WaitForSeconds(activationInterval);
+    //        yield return new WaitForSeconds(activationInterval);
 
 
-            if (eventManager != null)
-            {
-                eventManager.HandleTramp(gameObject);
-            }
-        }
-    }
+    //        if (eventManager != null)
+    //        {
+    //            eventManager.HandleTramp(gameObject);
+    //        }
+    //    }
+    //}
 
     private void OnTrapActivated(GameObject trap)
     {
