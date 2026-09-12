@@ -53,11 +53,19 @@ public class Player_Controller : MonoBehaviour
     public GameObject player;
     public GameObject Notification;
     public float Timer = 0f;
+
+    private Event_Manager eventManager;
     #endregion
 
     void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
+        eventManager = FindAnyObjectByType<Event_Manager>();
+    }
+
+    private void Start()
+    {
+        eventManager.OnPlayerDamaged += TakeDamage;
     }
 
     private void Update()
@@ -127,11 +135,18 @@ public class Player_Controller : MonoBehaviour
 
     void Death()
     {
-        if (current_HP == 0)
+        if (current_HP == 0 && !isDead)
         {
             _animator.SetTrigger("isDead");
             _rb.simulated = false;
             isDead = true;
+
+            if (eventManager != null)
+            {
+                eventManager.TriggerDeath();
+            }
+
+
         }
     }
     #endregion
@@ -214,15 +229,7 @@ public class Player_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Tramp") && hitTimer <= 0f)
-        {
-            HP[current_HP - 1].SetActive(false);
-            current_HP--;
-
-            float hitDuration = 0.3f;
-            hitTimer = hitDuration;
-        }
-
+        
         if (collision.CompareTag("Coin"))
         {
             Coins += 1;
@@ -236,7 +243,37 @@ public class Player_Controller : MonoBehaviour
 
             Death();
         }
+
+        if (collision.CompareTag("Victory"))
+        {
+            if (eventManager != null)
+            {
+                eventManager.ProcessObject(collision.gameObject);
+            }
+        }
     } //Colisiones.
+
+    private void TakeDamage(int damage)
+    {
+        if (hitTimer > 0f)
+            return;
+
+        current_HP -= damage;
+
+        current_HP = Mathf.Max(current_HP, 0);
+
+        UpdateHP();
+
+        hitTimer = 0.3f;
+
+
+        if (current_HP <= 0)
+        {
+            Death();
+        }
+
+
+    }
 }
 
 

@@ -7,6 +7,8 @@ TagManager:
   - Tramp
   - Coin
   - Death
+  - Trap
+  - Victory
   layers:
   - Default
   - TransparentFX
