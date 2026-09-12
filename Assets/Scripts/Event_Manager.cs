@@ -39,9 +39,9 @@ public class Event_Manager : MonoBehaviour
     {
         string objectTag = obj.tag;
 
-        if (tagActions.ContainsKey(objectTag))
+        if (tagActions.TryGetValue(obj.tag, out Action<GameObject> action))
         {
-            tagActions[objectTag](obj);
+            action(obj);
         }
 
     }
@@ -141,7 +141,7 @@ public class Event_Manager : MonoBehaviour
 
             yield return new WaitForSeconds(2f);
 
-            HandleTramp(traps[currentTrap].gameObject);
+            ProcessObject(traps[currentTrap].gameObject);
 
             currentTrap++;
 
