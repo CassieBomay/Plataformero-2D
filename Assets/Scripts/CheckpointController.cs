@@ -4,12 +4,10 @@ using UnityEngine;
 public class CheckpointController : MonoBehaviour
 {
     public GameObject player;
-    public GameObject checkPoint;
     public GameObject Notification;
     public Vector3 playerPosition;
     public List<Transform> checkpoints = new List<Transform>();
     public int currentChck = 0;
-    public int lives = 5;
     public bool alive = true;
 
     void Start()
@@ -22,7 +20,6 @@ public class CheckpointController : MonoBehaviour
         if (alive == false)
         {
             player.transform.position = checkpoints[currentChck].position;
-            lives -= 1;
             alive = true;
         }
 

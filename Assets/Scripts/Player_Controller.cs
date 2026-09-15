@@ -130,7 +130,7 @@ public class Player_Controller : MonoBehaviour
         {
             hitTimer -= Time.deltaTime;
             _spriteRenderer.color = Color.red;
-            bool_Script.alive = false;
+            bool_Script.alive = false; //cambia el valor del script CheckpointController remotamente!!! waow!!! 
         }
         else
             _spriteRenderer.color = Color.white;
