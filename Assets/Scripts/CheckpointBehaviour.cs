@@ -2,15 +2,15 @@ using UnityEngine;
 
 public class CheckpointBehaviour : MonoBehaviour
 {
-    private Collider ThisCollider;
-    private Component isEnabled;
+    [SerializeField] private Collider2D ThisCollider;
+    [SerializeField] private Component isEnabled;
     public int currentCheckpoint;
     public Component CheckpointController;
 
     void Start()
     {
-        ThisCollider = GetComponent<Collider>();
-        isEnabled = GetComponent<SphereCollider>();
+        ThisCollider = GetComponent<Collider2D>();
+        isEnabled = GetComponent<BoxCollider2D>();
     }
 
     void Update()
@@ -18,9 +18,9 @@ public class CheckpointBehaviour : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.CompareTag("Player"))
+        if (collision.CompareTag("Player"))
         {
             // Toggles the state (true becomes false, false becomes true)
             ThisCollider.isTrigger = !ThisCollider.isTrigger;

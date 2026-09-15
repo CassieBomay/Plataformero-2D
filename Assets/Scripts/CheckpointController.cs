@@ -33,9 +33,9 @@ public class CheckpointController : MonoBehaviour
         Notification.SetActive(false);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.CompareTag("checkpoint"))
+        if (collision.CompareTag("checkpoint"))
         {
             Debug.Log("You hit a checkpoint!");
             currentChck += 1;

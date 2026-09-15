@@ -1,3 +1,4 @@
+
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -53,6 +54,7 @@ public class Player_Controller : MonoBehaviour
     public GameObject player;
     public GameObject Notification;
     public float Timer = 0f;
+    public CheckpointController bool_Script; //Codigo del Alonso 
 
     private Event_Manager eventManager;
     #endregion
@@ -86,8 +88,8 @@ public class Player_Controller : MonoBehaviour
         float axisH = inputMove.action.ReadValue<Vector2>().x;
 
         _rb.linearVelocityX = axisH * p_Speed; //Movimiento del jugador en el eje X.
-        float currentSpeed = Mathf.Abs(_rb.linearVelocityX); //Volver el valor en absoluto para que no se vuelva negativo al cambiar la dirección del eje.
-        _animator.SetFloat("player_Speed", currentSpeed); //Pasar la información a Animator.
+        float currentSpeed = Mathf.Abs(_rb.linearVelocityX); //Volver el valor en absoluto para que no se vuelva negativo al cambiar la direcciï¿½n del eje.
+        _animator.SetFloat("player_Speed", currentSpeed); //Pasar la informaciï¿½n a Animator.
 
         if (!isDead) //Se asegura de que el sprite no se voltee cuando el jugador muere.
         {
@@ -119,7 +121,7 @@ public class Player_Controller : MonoBehaviour
         for (int i = 0; i < HP.Length; i++)
         {
             HP[i].SetActive(i < current_HP);
-        } //Si el índice es menor que la vida actual, se activa el objeto de vida correspondiente; de lo contrario, se desactiva.
+        } //Si el ï¿½ndice es menor que la vida actual, se activa el objeto de vida correspondiente; de lo contrario, se desactiva.
     }
 
     void Hit_Color()
@@ -128,14 +130,15 @@ public class Player_Controller : MonoBehaviour
         {
             hitTimer -= Time.deltaTime;
             _spriteRenderer.color = Color.red;
+            bool_Script.alive = false;
         }
         else
             _spriteRenderer.color = Color.white;
-    } //Cambio del color a recibir el daño.
+    } //Cambio del color a recibir el daï¿½o.
 
     void Death()
     {
-        if (current_HP == 0 && !isDead)
+        if (current_HP == 0 && !isDead) //todo change from instant death to make use of life system. maybe use hp system and teleport back instead of dying?
         {
             _animator.SetTrigger("isDead");
             _rb.simulated = false;
@@ -188,10 +191,10 @@ public class Player_Controller : MonoBehaviour
     {
         if (_states.Count >= recordDuration)
         {
-            _states.Dequeue(); //Borrar últimas entradas para no superar 60 frames.
+            _states.Dequeue(); //Borrar ï¿½ltimas entradas para no superar 60 frames.
         }
 
-        AnimatorStateInfo currentFrame = _animator.GetCurrentAnimatorStateInfo(0); //Obtener el estado actual de la animación para poder reproducirlo al rebobinar.
+        AnimatorStateInfo currentFrame = _animator.GetCurrentAnimatorStateInfo(0); //Obtener el estado actual de la animaciï¿½n para poder reproducirlo al rebobinar.
 
         _states.Enqueue(new Player_States(
             transform.position,
@@ -295,4 +298,4 @@ public class Player_States
         animationTime = time;
         currentHP = hp;
     }
-} //Capsulación de los estados del player para el rebobinado.
+} //Capsulaciï¿½n de los estados del player para el rebobinado.
