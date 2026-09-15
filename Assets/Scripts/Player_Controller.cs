@@ -200,8 +200,7 @@ public class Player_Controller : MonoBehaviour
             transform.position,
             _rb.linearVelocity,
             currentFrame.fullPathHash,
-            currentFrame.normalizedTime,
-            current_HP)); //Guardar nuevas entradas.
+            currentFrame.normalizedTime)); //Guardar nuevas entradas.
     }
 
     void ReverseTime()
@@ -216,10 +215,6 @@ public class Player_Controller : MonoBehaviour
 
             //revind_animation
             _animator.Play(state.animationFrame, 0, state.animationTime);
-
-            //rewind_HP
-            current_HP = state.currentHP;
-            UpdateHP();
         }
         else
         {
@@ -274,8 +269,6 @@ public class Player_Controller : MonoBehaviour
         {
             Death();
         }
-
-
     }
 }
 
@@ -288,14 +281,12 @@ public class Player_States
     public Vector3 velocity;
     public int animationFrame;
     public float animationTime;
-    public int currentHP;
 
-    public Player_States(Vector3 pos, Vector3 vel, int frame, float time, int hp)
+    public Player_States(Vector3 pos, Vector3 vel, int frame, float time)
     {
         position = pos;
         velocity = vel;
         animationFrame = frame;
         animationTime = time;
-        currentHP = hp;
     }
 } //Capsulaci�n de los estados del player para el rebobinado.
